@@ -43,7 +43,7 @@ public class Flow {
 		if(!process(phases)) return;
 	}
 	
-	public void loadPhase() {
+	private void loadPhase() {
 		
 		if(phases == null) {
 			
@@ -54,7 +54,7 @@ public class Flow {
 		}
 	}
 	
-	public boolean process(List<Object> objects) {
+	private boolean process(List<Object> objects) {
 		
 		if(objects == null) return false;
 		
