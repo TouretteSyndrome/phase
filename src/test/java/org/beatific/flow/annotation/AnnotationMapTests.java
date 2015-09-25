@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.beatific.flow.flow.Phase1;
 import org.beatific.flow.flow.Phase2;
+import org.beatific.flow.flow.Phase3;
 import org.beatific.flow.phase.Phase;
 import org.beatific.flow.phase.PhaseExecutor;
 import org.junit.Assert;
@@ -28,6 +29,9 @@ public class AnnotationMapTests {
 	@Autowired
 	private Phase2 phase2;
 	
+	@Autowired
+	private Phase3 phase3;
+	
 	private List<PhaseExecutor> phases;
 	
 	@Before
@@ -35,6 +39,7 @@ public class AnnotationMapTests {
 		phases = new ArrayList<PhaseExecutor>();
 		phases.add(phase1);
 		phases.add(phase2);
+		phases.add(phase3);
 	}
 	
 	@Test
