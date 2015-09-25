@@ -1,7 +1,21 @@
 package org.beatific.flow.repository;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public abstract class OneStateRepository implements Repository<OneState>{
 
+	protected ThreadLocal<Map<String, Object>> threadStore = new ThreadLocal<Map<String, Object>>() {
+		
+		protected Map<String, Object> initialValue() {
+			return new HashMap<String, Object>();
+		}
+	};
+	
+	protected Map<String, Object> dataMap() {
+		return threadStore.get();
+	}
+	
 	public OneState getState() {
 		return OneState.ONE;
 	}
