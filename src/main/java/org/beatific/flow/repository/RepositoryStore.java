@@ -17,6 +17,7 @@ public class RepositoryStore {
 	@Autowired
 	private AnnotationMap aMap;
 	private Map<String, Repository<?>> store = new HashMap<String, Repository<?>>();
+	private List<Object> objects;;
 
 	private synchronized Repository<?> getRepository(Object object) {
 		return store.get(id(object));
@@ -72,9 +73,11 @@ public class RepositoryStore {
 	}
 
 	public void loadStore() {
-		List<Object> objects = aMap.get(Store.class);
 		
-		if(objects == null)return;
+		if(objects == null) {
+			objects = aMap.get(Store.class);
+			if(objects == null) throw new RepositoryLoadException("Repository that 'Store' annotation tagged is not existed");
+		}
 		
 		for(Object object : objects) {
 			if(object instanceof Repository) {
