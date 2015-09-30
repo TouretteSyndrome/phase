@@ -46,7 +46,15 @@ public class AnnotationUtils {
 	}
 	
 	public static List<Class<?>> findClassByAnnotation(String basePackage, Class<? extends Annotation> annotationType) {
-		return findClassByAnnotation(new String[]{basePackage}, annotationType);
+		String[] basePackages;
+		
+		if(basePackage.contains(",")) {
+			basePackages = basePackage.split(",");
+		} else {
+			basePackages = new String[]{basePackage};
+		}
+		
+		return findClassByAnnotation(basePackages, annotationType);
 	}
 	
 	public static List<Class<?>> findClassByAnnotation(String[] basePackages, Class<? extends Annotation> annotationType) {

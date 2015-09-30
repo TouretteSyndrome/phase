@@ -1,6 +1,6 @@
 package org.beatific.flow.common;
 
-public class GetterClass extends AutoGetter {
+public class GetterClass extends AutoDataResolver {
 
 	private String name;
 	private Integer age;

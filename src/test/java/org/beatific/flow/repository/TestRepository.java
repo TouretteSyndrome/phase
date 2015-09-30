@@ -11,13 +11,13 @@ public class TestRepository extends OneStateRepository{
 	@Override
 	public void save(Object object) {
 		
-		dataMap().put(object.getClass().getName(), object);
+		dataMap(object).put(object.getClass().getName(), object);
 	}
 
 	@Override
 	public Object load(Object object) {
 		
-		return dataMap();
+		return dataMap(object);
 	}
 
 	@Override
@@ -27,7 +27,7 @@ public class TestRepository extends OneStateRepository{
 
 	@Override
 	public void remove(Object object) {
-		dataMap().clear();
+		dataMap(object).clear();
 	}
 
 }

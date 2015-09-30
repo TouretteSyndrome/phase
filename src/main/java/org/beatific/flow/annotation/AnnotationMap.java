@@ -28,7 +28,11 @@ public class AnnotationMap {
 	private String basePackage;
 
 	private List<Class<?>> classes(Class<? extends Annotation> annotation) {
-		return AnnotationUtils.findClassByAnnotation(basePackage, annotation);
+		
+		StringBuffer sb = new StringBuffer("org.beatific.flow");
+		if(basePackage != null) sb.append(",").append(basePackage);
+		
+		return AnnotationUtils.findClassByAnnotation(sb.toString(), annotation);
 	}
 
 	@SuppressWarnings("unchecked")

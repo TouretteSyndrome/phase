@@ -5,15 +5,15 @@ import java.util.Map;
 
 public abstract class OneStateRepository implements Repository<OneState>{
 
-	protected ThreadLocal<Map<String, Object>> threadStore = new ThreadLocal<Map<String, Object>>() {
+	protected IdLocal<Map<String, Object>> idStore = new IdLocal<Map<String, Object>>() {
 		
 		protected Map<String, Object> initialValue() {
 			return new HashMap<String, Object>();
 		}
 	};
 	
-	protected Map<String, Object> dataMap() {
-		return threadStore.get();
+	protected Map<String, Object> dataMap(Object object) {
+		return idStore.get(object);
 	}
 	
 	public OneState getState() {

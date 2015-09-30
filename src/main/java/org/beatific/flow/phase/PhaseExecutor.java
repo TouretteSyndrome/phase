@@ -1,10 +1,10 @@
 package org.beatific.flow.phase;
 
-import org.beatific.flow.common.AutoGetter;
+import org.beatific.flow.common.AutoDataResolver;
 import org.beatific.flow.repository.RepositoryStore;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public abstract class PhaseExecutor extends AutoGetter {
+public abstract class PhaseExecutor extends AutoDataResolver {
 
 	@Autowired
 	protected RepositoryStore store;

@@ -10,7 +10,6 @@ import org.beatific.flow.phase.Phase;
 import org.beatific.flow.phase.PhaseExecutor;
 import org.beatific.flow.repository.RepositoryStore;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 /**

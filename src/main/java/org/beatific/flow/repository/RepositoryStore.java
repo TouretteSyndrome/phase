@@ -3,11 +3,13 @@ package org.beatific.flow.repository;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.beatific.flow.annotation.AnnotationMap;
+import org.beatific.flow.common.AutoDataResolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -20,7 +22,13 @@ public class RepositoryStore {
 	private List<Object> objects;;
 
 	private synchronized Repository<?> getRepository(Object object) {
-		return store.get(id(object));
+		Repository<?> repository = store.get(id(object));
+		if(repository == null) {
+			repository = new DefaultRepository();
+			store.put(id(object), repository);
+		}
+		
+		return repository;
 	}
 
 	private String id(Object object) {
@@ -76,14 +84,85 @@ public class RepositoryStore {
 		
 		if(objects == null) {
 			objects = aMap.get(Store.class);
-			if(objects == null) throw new RepositoryLoadException("Repository that 'Store' annotation tagged is not existed");
-		}
-		
-		for(Object object : objects) {
-			if(object instanceof Repository) {
-				addRepository((Repository<?>)object);
+			if(objects == null) objects = new ArrayList<Object>();
+			for(Object object : objects) {
+				if(object instanceof Repository) {
+					addRepository((Repository<?>)object);
+				}
 			}
 		}
+		
+	}
+	
+	private class DefaultRepository implements Repository<OneState> {
+
+		protected IdLocal<Map<String, Object>> idStore = new IdLocal<Map<String, Object>>() {
+			
+			protected Map<String, Object> initialValue() {
+				return new HashMap<String, Object>();
+			}
+		};
+		
+		protected Map<String, Object> dataMap(Object object) {
+			return idStore.get(object);
+		}
+		
+		public OneState getState() {
+			return OneState.ONE;
+		}
+
+		public void save(Object object) {
+			
+			if(object instanceof AutoDataResolver) {
+				AutoDataResolver resolver = (AutoDataResolver)object;
+				
+				for(String fieldName : resolver.fieldList()) {
+					dataMap(object).put(fieldName, resolver.get(fieldName));
+				}
+			}
+		}
+		
+		public void save(Object state, Object object) {
+			
+			save(object);
+		}
+		
+		public Object load(Object object) {
+			
+			if(object instanceof AutoDataResolver) {
+				AutoDataResolver resolver = (AutoDataResolver)object;
+				
+				for(String fieldName : resolver.fieldList()) {
+					Object fieldValue = dataMap(object).get(fieldName);
+					
+					if(fieldValue == null) continue;
+					resolver.put(fieldName, fieldValue);
+				}
+			}
+			
+			return dataMap(object);
+		}
+		public Object load(Object state, Object object) {
+			
+			return load(object);
+		}
+
+		public void change(Object object) {
+			
+		}
+		
+		public void change(Object state, Object object) {
+			change(object);
+		}
+		
+		public void remove(Object object) {
+			dataMap(object).clear();
+		}
+		
+		public void remove(Object state, Object object) {
+			remove(object);
+		}
+		
 	}
 
 }
