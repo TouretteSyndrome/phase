@@ -14,4 +14,5 @@ public @interface Phase {
 
 	String id();
 	int order();
+	int time() default 1;
 }

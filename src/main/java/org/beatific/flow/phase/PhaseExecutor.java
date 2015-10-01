@@ -3,6 +3,7 @@ package org.beatific.flow.phase;
 import java.util.Map;
 
 import org.beatific.flow.common.AutoDataResolver;
+import org.beatific.flow.exception.ExceptionHandler;
 import org.beatific.flow.repository.RepositoryStore;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -17,7 +18,7 @@ public abstract class PhaseExecutor extends AutoDataResolver {
 	private boolean first = false;
 	private boolean last = false;
 	private boolean auto = true;
-
+	
 	public boolean isFirst() {
 		return first;
 	}
@@ -29,7 +30,7 @@ public abstract class PhaseExecutor extends AutoDataResolver {
 	public boolean isAuto() {
 		return auto;
 	}
-
+ 
 	public void execute() throws Exception {
 
 		if(isAuto()) autoExecute();

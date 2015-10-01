@@ -5,8 +5,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.beatific.flow.accumulation.Accumulation;
 import org.beatific.flow.annotation.AnnotationMap;
-import org.beatific.flow.common.AutoDataResolver;
 import org.beatific.flow.exception.ExceptionHandler;
 import org.beatific.flow.phase.Phase;
 import org.beatific.flow.phase.PhaseExecutor;
@@ -37,6 +37,9 @@ public class Flow {
 	private List<Object> phases = null;
 	
 	private boolean auto = true;
+	
+	@Autowired
+	private Accumulation accum;
 	
 	public void setAuto(boolean auto) {
 		this.auto = auto;
@@ -71,12 +74,20 @@ public class Flow {
 		}
 	}
 	
+	private void setInterval(Object phase) {
+		Class<?> clazz = phase.getClass();
+	    Phase phaseAnnotation = clazz.getAnnotation(Phase.class);
+	    accum.setTarget(phase, phaseAnnotation.time());
+	}
+	
 	private void renderContext(List<Object> phases, String key, Object value) {
 		
 		for(Object phase : phases) {
 			
 			if(phase instanceof PhaseExecutor) {
 			    ((PhaseExecutor)phase).put(key, value);
+			    
+			    setInterval(phase);
 			}
 		}
 			
@@ -90,7 +101,7 @@ public class Flow {
 			
 			for(Object object : objects) {
 				
-				if(object instanceof PhaseExecutor) {
+				if(accum.touch(object) && object instanceof PhaseExecutor) {
 					
 					PhaseExecutor phase = (PhaseExecutor)object;
 					phase.execute();
