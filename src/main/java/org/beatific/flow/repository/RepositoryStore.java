@@ -10,8 +10,11 @@ import java.util.Map;
 
 import org.beatific.flow.annotation.AnnotationMap;
 import org.beatific.flow.common.AutoDataResolver;
+import org.beatific.flow.repository.support.CopyFrom;
+import org.beatific.flow.repository.support.CopyTo;
 import org.beatific.flow.repository.support.IdLocal;
 import org.beatific.flow.repository.support.OneState;
+import org.beatific.flow.util.ReflectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -118,7 +121,7 @@ public class RepositoryStore {
 			if(object instanceof AutoDataResolver) {
 				AutoDataResolver resolver = (AutoDataResolver)object;
 				
-				for(String fieldName : resolver.fieldListForCopyFrom()) {
+				for(String fieldName : ReflectionUtils.findFieldNameForAnnotation(resolver.getClass(), CopyFrom.class)) {
 					dataMap(object).put(fieldName, resolver.get(fieldName));
 					resolver.put(fieldName, null);
 				}
@@ -130,7 +133,7 @@ public class RepositoryStore {
 			if(object instanceof AutoDataResolver) {
 				AutoDataResolver resolver = (AutoDataResolver)object;
 				
-				for(String fieldName : resolver.fieldListForCopyTo()) {
+				for(String fieldName : ReflectionUtils.findFieldNameForAnnotation(resolver.getClass(), CopyTo.class)) {
 					Object fieldValue = dataMap(object).get(fieldName);
 					
 					if(fieldValue == null) continue;
