@@ -1,10 +1,12 @@
 package org.beatific.flow.flow;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 import org.beatific.flow.annotation.AnnotationMap;
+import org.beatific.flow.common.AutoDataResolver;
 import org.beatific.flow.exception.ExceptionHandler;
 import org.beatific.flow.phase.Phase;
 import org.beatific.flow.phase.PhaseExecutor;
@@ -13,9 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
- * flow system is consisted by collector, analyzer, report
+ * flow system is consisted by phase
  * 
- * In the order by collector, analyzer, report
+ * In the order by phase
  * process is executed.
  *  
  * @author beatific J
@@ -34,6 +36,12 @@ public class Flow {
 	
 	private List<Object> phases = null;
 	
+	private boolean auto = true;
+	
+	public void setAuto(boolean auto) {
+		this.auto = auto;
+	}
+	
 	public void flow() {
 		
 		store.loadStore();
@@ -49,9 +57,29 @@ public class Flow {
 			
 			phases = map.get(Phase.class);
 			
+			if(phases == null) phases = new ArrayList<Object>();
+			
 			Collections.sort(phases, new PhaseComparator());
 			
+			renderContext(phases, "auto", auto);
+			
+			PhaseExecutor first = (PhaseExecutor)phases.get(0);
+			first.put("first", true);
+			
+			PhaseExecutor last = (PhaseExecutor)phases.get(phases.size()-1);
+			last.put("last", true);
 		}
+	}
+	
+	private void renderContext(List<Object> phases, String key, Object value) {
+		
+		for(Object phase : phases) {
+			
+			if(phase instanceof PhaseExecutor) {
+			    ((PhaseExecutor)phase).put(key, value);
+			}
+		}
+			
 	}
 	
 	private boolean process(List<Object> objects) {
@@ -99,7 +127,7 @@ public class Flow {
 				
 			} else {
 				
-				throw new RuntimeException("Phase Class not matched");
+				throw new ClassNotMatchException("Class is not instance of PhaseExecutor");
 			}
 		}
 		

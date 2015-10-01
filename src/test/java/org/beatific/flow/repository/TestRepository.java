@@ -1,13 +1,11 @@
 package org.beatific.flow.repository;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.beatific.flow.repository.support.OneStateRepository;
+
 
 @Store(id="test")
 public class TestRepository extends OneStateRepository{
 
-	private Logger logger = LoggerFactory.getLogger(getClass());
-	
 	@Override
 	public void save(Object object) {
 		
@@ -16,7 +14,6 @@ public class TestRepository extends OneStateRepository{
 
 	@Override
 	public Object load(Object object) {
-		
 		return dataMap(object);
 	}
 

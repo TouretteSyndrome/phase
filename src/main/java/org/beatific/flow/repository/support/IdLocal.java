@@ -1,4 +1,4 @@
-package org.beatific.flow.repository;
+package org.beatific.flow.repository.support;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;

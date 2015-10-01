@@ -10,6 +10,8 @@ import java.util.Map;
 
 import org.beatific.flow.annotation.AnnotationMap;
 import org.beatific.flow.common.AutoDataResolver;
+import org.beatific.flow.repository.support.IdLocal;
+import org.beatific.flow.repository.support.OneState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -110,29 +112,25 @@ public class RepositoryStore {
 		public OneState getState() {
 			return OneState.ONE;
 		}
-
-		public void save(Object object) {
+		
+		public void save(Object state, Object object) {
 			
 			if(object instanceof AutoDataResolver) {
 				AutoDataResolver resolver = (AutoDataResolver)object;
 				
-				for(String fieldName : resolver.fieldList()) {
+				for(String fieldName : resolver.fieldListForCopyFrom()) {
 					dataMap(object).put(fieldName, resolver.get(fieldName));
+					resolver.put(fieldName, null);
 				}
 			}
 		}
 		
-		public void save(Object state, Object object) {
-			
-			save(object);
-		}
-		
-		public Object load(Object object) {
+		public Object load(Object state, Object object) {
 			
 			if(object instanceof AutoDataResolver) {
 				AutoDataResolver resolver = (AutoDataResolver)object;
 				
-				for(String fieldName : resolver.fieldList()) {
+				for(String fieldName : resolver.fieldListForCopyTo()) {
 					Object fieldValue = dataMap(object).get(fieldName);
 					
 					if(fieldValue == null) continue;
@@ -142,25 +140,14 @@ public class RepositoryStore {
 			
 			return dataMap(object);
 		}
-		public Object load(Object state, Object object) {
-			
-			return load(object);
-		}
 
-		public void change(Object object) {
-			
-		}
 		
 		public void change(Object state, Object object) {
-			change(object);
-		}
-		
-		public void remove(Object object) {
-			dataMap(object).clear();
+			
 		}
 		
 		public void remove(Object state, Object object) {
-			remove(object);
+			dataMap(object).clear();
 		}
 		
 	}

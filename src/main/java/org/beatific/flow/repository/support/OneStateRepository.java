@@ -1,7 +1,9 @@
-package org.beatific.flow.repository;
+package org.beatific.flow.repository.support;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import org.beatific.flow.repository.Repository;
 
 public abstract class OneStateRepository implements Repository<OneState>{
 

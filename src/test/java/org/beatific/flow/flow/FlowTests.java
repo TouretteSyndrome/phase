@@ -38,12 +38,16 @@ public class FlowTests {
 	@Autowired
 	private Shared shared;
 	
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testFlow() {
+		
+		flow.setAuto(false);
+		
 		flow.flow();
 		
-		Map<String, Object> m1 = (Map<String, Object>)repository1.load(this);
-		Map<String, Object> m2 = (Map<String, Object>)repository2.load(this);
+		Map<String, Object> m1 = (Map<String, Object>)repository1.load(p1);
+		Map<String, Object> m2 = (Map<String, Object>)repository2.load(p3);
 		
 		String name1 = p1.getClass().getName();
 		String name2 = p2.getClass().getName();

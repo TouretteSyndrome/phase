@@ -7,8 +7,8 @@ import org.beatific.flow.phase.PhaseExecutor;
 public class Phase3 extends PhaseExecutor {
 
 	@Override
-	public void execute() throws Exception {
+	protected void innerExecute() throws Exception {
 		store.save(this);
 	}
-
+	
 }

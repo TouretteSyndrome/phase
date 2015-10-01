@@ -11,12 +11,11 @@ public class Phase2 extends PhaseExecutor {
 	private Shared shared;
 	
 	@Override
-	public void execute() throws Exception {
+	protected void innerExecute() throws Exception {
 		store.save(this);
 		switch(shared.getValue()) {
 		case 1 : shared.setValue(2); break;
 		default : break;
 		}
 	}
-
 }
