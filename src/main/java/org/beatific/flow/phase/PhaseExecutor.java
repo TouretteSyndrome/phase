@@ -1,5 +1,6 @@
 package org.beatific.flow.phase;
 
+import java.util.Date;
 import java.util.Map;
 
 import org.beatific.flow.common.AutoDataResolver;
@@ -17,6 +18,7 @@ public abstract class PhaseExecutor extends AutoDataResolver {
 	private boolean first = false;
 	private boolean last = false;
 	private boolean auto = true;
+	private Date lastDate = null;
 	
 	public boolean isFirst() {
 		return first;
@@ -29,7 +31,15 @@ public abstract class PhaseExecutor extends AutoDataResolver {
 	public boolean isAuto() {
 		return auto;
 	}
- 
+	
+	public Date getLastDate() {
+		return lastDate;
+	}
+
+	public void setLastDate(Date lastDate) {
+		this.lastDate = lastDate;
+	}
+
 	public void execute() throws Exception {
 
 		if(isAuto()) autoExecute();

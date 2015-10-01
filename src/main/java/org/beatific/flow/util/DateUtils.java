@@ -3,6 +3,7 @@ package org.beatific.flow.util;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 public class DateUtils {
 
@@ -30,5 +31,16 @@ public class DateUtils {
 		cal.setTime(date);
 		cal.add(Calendar.DATE, amount);
 		return cal.getTime();
+	}
+	/**
+	 * remove time under miliseconds
+	 * @param date
+	 * @return
+	 */
+	public static Date noMiliSecondsDate(Date date) {
+		Calendar testDateCal = Calendar.getInstance(TimeZone.getDefault());
+	    testDateCal.setTime(date);
+	    testDateCal.set(14, 0);
+	    return testDateCal.getTime();
 	}
 }

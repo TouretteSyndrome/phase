@@ -5,12 +5,12 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.beatific.flow.accumulation.Accumulation;
 import org.beatific.flow.annotation.AnnotationMap;
 import org.beatific.flow.exception.ExceptionHandler;
 import org.beatific.flow.phase.Phase;
 import org.beatific.flow.phase.PhaseExecutor;
 import org.beatific.flow.repository.RepositoryStore;
+import org.beatific.flow.scheduler.TimeTable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -37,9 +37,10 @@ public class Flow {
 	private List<Object> phases = null;
 	
 	private boolean auto = true;
+	private boolean isLoad = false;
 	
 	@Autowired
-	private Accumulation accum;
+	private TimeTable timetable;
 	
 	public void setAuto(boolean auto) {
 		this.auto = auto;
@@ -47,11 +48,15 @@ public class Flow {
 	
 	public void flow() {
 		
-		store.loadStore();
-		
-		loadPhase();
-
+		if(!isLoad)load();
 		if(!process(phases)) return;
+	}
+	
+	public void load() {
+		
+		isLoad = true;
+        store.loadStore();
+		loadPhase();
 	}
 	
 	private void loadPhase() {
@@ -74,20 +79,53 @@ public class Flow {
 		}
 	}
 	
-	private void setInterval(Object phase) {
+	private PrevInterval setInterval(Object phase, PrevInterval prev) {
 		Class<?> clazz = phase.getClass();
 	    Phase phaseAnnotation = clazz.getAnnotation(Phase.class);
-	    accum.setTarget(phase, phaseAnnotation.time());
+	    
+	    String cron = phaseAnnotation.cron();
+	    String fixedDelayString = null;
+	    Integer fixedDelay = 0;
+	    
+	    if("".equals(cron)) {
+	    	fixedDelayString = phaseAnnotation.fixedDelayString();
+	    	if("".equals(fixedDelayString)) {
+	    		fixedDelay = phaseAnnotation.fixedDelay();
+                if(fixedDelay == 0) {
+                	Object validValue = prev.validValue(phaseAnnotation.id());
+                	if(validValue != null)timetable.setFireTime(phase, validValue);
+                	return prev;
+	    		} else if(fixedDelay < 0) {
+	    			return prev;
+	    		}
+                
+	    	} else {
+	    		fixedDelay = Integer.parseInt(fixedDelayString);
+	    		
+	    	}
+	    	prev.setFixedDelay(fixedDelay);
+	    	timetable.setFireTime(phase, fixedDelay);
+	    } else {
+	    	prev.setCron(cron);
+	    	timetable.setFireTime(phase, cron);
+	    }
+	    
+	    prev.setId(phaseAnnotation.id());
+	    return prev;
+	    
+		
 	}
 	
 	private void renderContext(List<Object> phases, String key, Object value) {
+		
+		PrevInterval prev = new PrevInterval();
 		
 		for(Object phase : phases) {
 			
 			if(phase instanceof PhaseExecutor) {
 			    ((PhaseExecutor)phase).put(key, value);
 			    
-			    setInterval(phase);
+			    prev = setInterval(phase, prev);
 			}
 		}
 			
@@ -96,12 +134,11 @@ public class Flow {
 	private boolean process(List<Object> objects) {
 		
 		if(objects == null) return false;
-		
 		try {
 			
 			for(Object object : objects) {
 				
-				if(accum.touch(object) && object instanceof PhaseExecutor) {
+				if(timetable.touch(object) && object instanceof PhaseExecutor) {
 					
 					PhaseExecutor phase = (PhaseExecutor)object;
 					phase.execute();
@@ -129,12 +166,18 @@ public class Flow {
 				Class<?> clazz = o1.getClass();
 				Phase p1 = clazz.getAnnotation(Phase.class);
 				int prev = p1.order();
+				String id1 = p1.id();
 				
 				Class<?> klass = o2.getClass();
 				Phase p2 = klass.getAnnotation(Phase.class);
 				int next = p2.order();
+				String id2 = p2.id();
 				
-				return prev - next;
+				if(id1.equals(id2)) {
+					return prev - next;
+				} else  {
+					return id1.compareTo(id2);
+				}
 				
 			} else {
 				
@@ -142,5 +185,27 @@ public class Flow {
 			}
 		}
 		
+	}
+	
+	private class PrevInterval {
+		
+		public Object validValue(String id) {
+			if(this.id.equals(id)) return cron==null ? fixedDelay:cron;
+			else return null;
+		}
+
+		public void setId(String id) {
+			this.id = id;
+		}
+
+		private String id;
+		private String cron;
+		private int fixedDelay;
+		public void setCron(String cron) {
+			this.cron = cron;
+		}
+		public void setFixedDelay(int fixedDelay) {
+			this.fixedDelay = fixedDelay;
+		}
 	}
 }

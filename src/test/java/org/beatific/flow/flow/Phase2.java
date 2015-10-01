@@ -4,7 +4,7 @@ import org.beatific.flow.phase.Phase;
 import org.beatific.flow.phase.PhaseExecutor;
 import org.springframework.beans.factory.annotation.Autowired;
 
-@Phase(id="test", order=2)
+@Phase(id="test", order=2, fixedDelay=1)
 public class Phase2 extends PhaseExecutor {
 
 	@Autowired

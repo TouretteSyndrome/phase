@@ -14,5 +14,7 @@ public @interface Phase {
 
 	String id();
 	int order();
-	int time() default 1;
+	int fixedDelay() default 0;
+	String fixedDelayString() default "";
+	String cron() default "";
 }

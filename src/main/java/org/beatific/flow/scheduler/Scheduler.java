@@ -11,7 +11,7 @@ public class Scheduler {
 	@Autowired
 	private Flow flow;
 	
-	@Scheduled(cron = "${cronExpression}")
+	@Scheduled(fixedDelay=1000)
 	public void execute() {
 		
 		flow.flow();
