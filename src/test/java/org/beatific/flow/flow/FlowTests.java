@@ -43,7 +43,6 @@ public class FlowTests {
 	public void testFlow() {
 		
 		flow.setAuto(false);
-		
 		flow.flow();
 		
 		Map<String, Object> m1 = (Map<String, Object>)repository1.load(p1);

@@ -9,6 +9,7 @@ import org.beatific.flow.annotation.AnnotationMap;
 import org.beatific.flow.exception.ExceptionHandler;
 import org.beatific.flow.phase.Phase;
 import org.beatific.flow.phase.PhaseExecutor;
+import org.beatific.flow.properties.PropertiesConverter;
 import org.beatific.flow.repository.RepositoryStore;
 import org.beatific.flow.scheduler.TimeTable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,7 @@ public class Flow {
 	
 	@Autowired
 	private RepositoryStore store;
-	
+
 	@Autowired
 	private ExceptionHandler[] handlers; /* When exception is occured, all spring beans that implements ExceptionHandler is executed*/
 	
@@ -38,6 +39,9 @@ public class Flow {
 	
 	private boolean auto = true;
 	private boolean isLoad = false;
+	
+	@Autowired
+	PropertiesConverter converter;
 	
 	@Autowired
 	private TimeTable timetable;
@@ -83,14 +87,12 @@ public class Flow {
 		Class<?> clazz = phase.getClass();
 	    Phase phaseAnnotation = clazz.getAnnotation(Phase.class);
 	    
-	    String cron = phaseAnnotation.cron();
-	    String fixedDelayString = null;
-	    Integer fixedDelay = 0;
+	    String cron = converter.convert(phaseAnnotation.cron());
+	    String fixedDelayString = converter.convert(phaseAnnotation.fixedDelayString());
+	    Integer fixedDelay = phaseAnnotation.fixedDelay();
 	    
 	    if("".equals(cron)) {
-	    	fixedDelayString = phaseAnnotation.fixedDelayString();
 	    	if("".equals(fixedDelayString)) {
-	    		fixedDelay = phaseAnnotation.fixedDelay();
                 if(fixedDelay == 0) {
                 	Object validValue = prev.validValue(phaseAnnotation.id());
                 	if(validValue != null)timetable.setFireTime(phase, validValue);
@@ -134,6 +136,7 @@ public class Flow {
 	private boolean process(List<Object> objects) {
 		
 		if(objects == null) return false;
+		
 		try {
 			
 			for(Object object : objects) {
