@@ -21,7 +21,7 @@ public class TimeTableTests {
 		List<Date> times = new ArrayList<Date>();
 		
 		for ( int i =0; i < 10 ; i++) {
-			if(timetable.touch(this))
+			if(timetable.isSatisfiedBy(this))
 				times.add(new Date());
 			try {
 				Thread.sleep(1000);
@@ -43,7 +43,7 @@ public class TimeTableTests {
 		List<Date> times = new ArrayList<Date>();
 		
 		for ( int i =0; i < 10 ; i++) {
-			if(timetable.touch(this))
+			if(timetable.isSatisfiedBy(this))
 				times.add(new Date());
 			try {
 				Thread.sleep(1000);

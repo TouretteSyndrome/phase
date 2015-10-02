@@ -81,19 +81,19 @@ public class ReflectionUtils {
 		return null;
 	}
 	
-	public static void put(Object object, String key, Object value) {
+	public static void set(Object object, String key, Object value) {
 		
-		put(object, object.getClass(), key, value);
+		set(object, object.getClass(), key, value);
 	}
 	
-	public static void put(Object object, Class<?> clazz, String key, Object value) {
+	public static void set(Object object, Class<?> clazz, String key, Object value) {
 		try {
 			Field field = clazz.getDeclaredField(key);
 			field.setAccessible(true);
 			field.set(object, value);
 		} catch (NoSuchFieldException e) {
 			if (clazz.getSuperclass() != null)
-				put(object, clazz.getSuperclass(), key, value);
+				set(object, clazz.getSuperclass(), key, value);
 		} catch (SecurityException e) {
 		} catch (IllegalArgumentException e) {
 		} catch (IllegalAccessException e) {

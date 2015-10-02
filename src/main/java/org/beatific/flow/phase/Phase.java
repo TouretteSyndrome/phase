@@ -6,9 +6,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import org.beatific.flow.annotation.AnnotationCollect;
+import org.beatific.flow.properties.PropertiesConvert;
 
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
+@PropertiesConvert
 @AnnotationCollect
 public @interface Phase {
 

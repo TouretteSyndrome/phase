@@ -44,7 +44,7 @@ public class TimeTable {
 		
 	}
 	
-	public boolean touch(Object object) {
+	public boolean isSatisfiedBy(Object object) {
 		
 		CronExpression expression = times.get(object);
 		if(expression == null) return false;

@@ -11,7 +11,7 @@ public abstract class AutoDataResolver {
 
 	public synchronized void put(String key, Object value) {
 
-		ReflectionUtils.put(this, key, value);
+		ReflectionUtils.set(this, key, value);
 	}
 
 }
