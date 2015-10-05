@@ -45,9 +45,9 @@ public class AnnotationMap {
 
 			if (clazz.isAnnotation()) {
 				Class<? extends Annotation> annotationClass = (Class<? extends Annotation>) clazz;
-
+				
 				for (Class<?> klass : classes(annotationClass)) {
-						map.put(annotationClass,  beanFactory.getBean(klass));
+					map.put(annotationClass,  beanFactory.getBean(klass));
 				}
 			}
 		}
