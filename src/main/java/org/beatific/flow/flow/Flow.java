@@ -1,7 +1,5 @@
 package org.beatific.flow.flow;
 
-import java.util.Iterator;
-
 import org.beatific.flow.exception.ExceptionHandler;
 import org.beatific.flow.phase.PhaseExecutor;
 import org.beatific.flow.phase.PhaseHolder;
