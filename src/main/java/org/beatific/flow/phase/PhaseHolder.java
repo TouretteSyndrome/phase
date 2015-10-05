@@ -4,10 +4,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.beatific.flow.annotation.AnnotationMap;
+import org.beatific.flow.annotation.AnnotationUtils;
 import org.beatific.flow.flow.ClassNotMatchException;
 import org.beatific.flow.properties.PropertiesConverter;
 import org.beatific.flow.scheduler.TimeTable;
@@ -25,6 +28,8 @@ public class PhaseHolder implements Iterable<PhaseExecutor>{
 	
 	@Autowired
 	PropertiesConverter converter;
+	
+	Map<Thread, String> threadMap = new HashMap<Thread, String>();
 
 	private List<PhaseExecutor> phases = null;
 
@@ -102,11 +107,20 @@ public class PhaseHolder implements Iterable<PhaseExecutor>{
 	public Iterator<PhaseExecutor> iterator() {
 		return phases.iterator();
 	}
-
+	
 	public boolean isSatisfiedBy(Object object) {
 		
-		return timetable.isSatisfiedBy(object);
+		Thread thread = Thread.currentThread();
+		String nextId = (String)AnnotationUtils.attr(object, "id");
 		
+		if( !nextId.equals(threadMap.get(thread)) && threadMap.values().contains(nextId) )return false;
+		
+		if( timetable.isSatisfiedBy(object) ) {
+			threadMap.put(thread, nextId);
+			return true;
+		} else {
+			return false;
+		}
 	}
 	
 	private class PhaseComparator implements Comparator<Object> {
