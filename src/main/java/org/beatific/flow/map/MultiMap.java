@@ -12,7 +12,7 @@ import org.springframework.util.Assert;
 /**
  * multimap is map that can put one key to multi value.
  * 
- * @author P067880
+ * @author beatific J
  */
 
 public class MultiMap<K,V> {
