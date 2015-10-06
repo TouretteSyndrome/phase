@@ -123,7 +123,7 @@ public class RepositoryStore {
 				
 				for(String fieldName : ReflectionUtils.findFieldNameForAnnotation(resolver.getClass(), CopyFrom.class)) {
 					dataMap(object).put(fieldName, resolver.get(fieldName));
-					resolver.put(fieldName, null);
+					resolver.put(fieldName, null); /* CopyFrom을 사용하는 변수의 초기값은 null이어야 한다. */
 				}
 			}
 		}

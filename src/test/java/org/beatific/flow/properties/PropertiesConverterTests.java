@@ -1,10 +1,12 @@
 package org.beatific.flow.properties;
 
-import org.beatific.flow.flow.Phase1;
-import org.beatific.flow.phase.Phase;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -12,17 +14,16 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @ContextConfiguration(locations={"classpath:applicationContext*.xml"})
 public class PropertiesConverterTests {
 
+	@Value("${basePackage}")
+	private String basePackage;
+	
 	@Autowired
 	public PropertiesConverter converter;
 	
-	@Autowired
-	public Phase1 p1;
-	
 	@Test
 	public void testConvert() {
-		converter.init();
-		Phase phase = p1.getClass().getAnnotation(Phase.class);
-		System.out.println(phase.cron());
+		
+		assertThat(converter.convert("${basePackage}"), is(basePackage));
 		
 	}
 }
