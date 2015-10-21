@@ -29,6 +29,7 @@ public class PropertiesConverter {
 		for(Properties prop : props) {
 			value = prop.getProperty(key);
 			if(value != null)break;
+			
 		}
 		
 		for(Environment env : envs) {
